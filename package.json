@@ -1,5 +1,5 @@
 {
-  "name": "goit-react-hw-04",
+  "name": "goit-react-hw-05",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,7 +17,7 @@
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
     "react-loader-spinner": "^6.1.6",
-    "react-modal": "^3.16.1"
+    "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
