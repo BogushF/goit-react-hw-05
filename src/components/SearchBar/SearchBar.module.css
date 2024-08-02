@@ -1,5 +1,4 @@
 .header {
-  background-color: #8c94f1;
   padding: 20px;
   margin-bottom: 20px;
 }
@@ -23,4 +22,9 @@
   width: 75px;
   border-radius: 10px;
   border: 2px rgb(123, 53, 236) solid;
+  cursor: pointer;
+}
+
+.btn:hover {
+  color: rgb(128, 98, 211);
 }

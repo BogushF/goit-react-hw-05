@@ -1,0 +1,10 @@
+.boxReview {
+  border-top: 1px solid rgb(146, 128, 211);
+  margin: 10px;
+}
+
+.box {
+  text-decoration: none;
+  list-style: none;
+  border-top: 1px solid rgb(146, 128, 211);
+}

@@ -1,84 +1,35 @@
-import { useEffect, useState } from "react";
-import fetchImages from "./API";
-import ImageGallery from "./components/ImageGallery/ImageGallery";
-import SearchBar from "./components/SearchBar/SearchBar";
-import Loader from "./components/Loader/Loader";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
-import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
-import ImageModal from "./components/ImageModal/ImageModal";
+import { Route, Routes } from "react-router-dom";
+import { Suspense, lazy } from "react";
 
-export const App = () => {
-  const [query, setQuery] = useState("");
-  const [cards, setCards] = useState([]);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [totalPages, setTotalPages] = useState(1);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [modalImage, setModalImage] = useState({ url: "", alt: "" });
+import Navigation from "./components/Navigation/Navigation.jsx";
+import Loader from "./components/Loader/Loader.jsx";
 
-  useEffect(() => {
-    if (query === "") {
-      return;
-    }
-    async function getData() {
-      try {
-        setIsLoading(true);
-        setIsError(false);
-        const { results, totalPages } = await fetchImages(query, page);
-        setCards((prevCards) => {
-          return [...prevCards, ...results];
-        });
-        setTotalPages(totalPages);
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    getData();
-  }, [page, query]);
+const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
+const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage.jsx"));
+const NotFoundPage = lazy(() =>
+  import("./pages/NotFoundPage/NotFoundPage.jsx")
+);
+const MovieDetailsPage = lazy(() =>
+  import("./pages/MovieDetailsPage/MovieDetailsPage.jsx")
+);
+const Review = lazy(() => import("./components/MovieReviews/MovieReviews.jsx"));
+const MovieCast = lazy(() => import("./components/MovieCast/MovieCast.jsx"));
 
-  const handleSearch = async (query) => {
-    setQuery(query);
-    setPage(1);
-    setCards([]);
-  };
-
-  const handleLoadMore = () => {
-    setPage(page + 1);
-  };
-
-  const handleImgClick = (url, alt) => {
-    setModalImage({ url, alt });
-    setIsOpen(true);
-  };
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
+export default function App() {
   return (
-    <>
-      <SearchBar onSearch={handleSearch} />
-      {isError && <ErrorMessage />}
-      {cards.length > 0 && !isError && (
-        <ImageGallery cards={cards} onImgClick={handleImgClick} />
-      )}
-      {isLoading && !isError && <Loader />}
-      {!isLoading && cards.length > 0 && !isError && page < totalPages && (
-        <LoadMoreBtn onClick={handleLoadMore} />
-      )}
-      {modalIsOpen && (
-        <ImageModal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          imageUrl={modalImage.url}
-          imageAlt={modalImage.alt}
-        />
-      )}
-    </>
+    <div>
+      <Navigation />
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/movies/:movieId" element={<MovieDetailsPage />}>
+            <Route path="credits" element={<MovieCast />} />
+            <Route path="reviews" element={<Review />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </div>
   );
-};
-
-export default App;
+}

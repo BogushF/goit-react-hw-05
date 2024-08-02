@@ -2,36 +2,40 @@ import toast, { Toaster } from "react-hot-toast";
 import s from "./SearchBar.module.css";
 
 const SearchBar = ({ onSearch }) => {
-  const notify = () => toast("Please enter text to search for images.");
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const form = evt.target;
+    const searchMovie = form.elements.searchMovie.value;
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const query = form.elements.query.value.trim();
-
-    if (query === "") {
-      notify();
+    if (searchMovie.trim() === "") {
+      toast("You haven't entered anything to search for....", {
+        style: {
+          color: "red",
+        },
+      });
       return;
     }
-    onSearch(query);
+
+    onSearch(searchMovie);
     form.reset();
   };
+
   return (
     <header className={s.header}>
       <form className={s.form} onSubmit={handleSubmit}>
         <input
           className={s.input}
           type="text"
-          name="query"
+          name="searchMovie"
           autoComplete="off"
           autoFocus
-          placeholder="Search images and photos"
+          placeholder="Search movies..."
         />
         <button className={s.btn} type="submit">
           Search
         </button>
+        <Toaster />
       </form>
-      <Toaster />
     </header>
   );
 };
